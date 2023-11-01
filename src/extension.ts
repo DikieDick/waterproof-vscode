@@ -27,6 +27,11 @@ import { TacticsPanel } from "./webviews/standardviews/tactics";
 
 import { newFileContent } from "./constants";
 
+import { promisify } from "util";
+import { exec } from "child_process";
+
+const promiseExec = promisify(exec);
+
 /**
  * Main extension class
  */
@@ -145,6 +150,26 @@ export class Coqnitive implements Disposable {
 
         // Register the new Waterproof Document command
         this.registerCommand("newWaterproofDocument", this.newFileCommand);
+
+        this.registerSetupCommand("install-all-tue-student", () => {
+            const term = window.createTerminal({name: "Waterproof Setup"});
+            term.show();
+            term.sendText("opam install coq-lsp coq-waterproof -y");
+            
+        });
+
+        this.registerSetupCommand("install-coq-lsp", () => {
+            const term = window.createTerminal({name: "Waterproof Updater"});
+            term.show();
+            term.sendText("opam install coq-lsp -y", true);
+    
+        });
+
+        this.registerSetupCommand("install-coq-waterproof", () => {
+            const term = window.createTerminal({name: "Waterproof Setup"});
+            term.show();
+            term.sendText("opam install coq-waterproof -y", true);
+        });
     }
 
     /**
@@ -178,6 +203,10 @@ export class Coqnitive implements Disposable {
     private registerCommand(name: string, handler: (...args: any[]) => void, editorCommand: boolean = false) {
         const register = editorCommand ? commands.registerTextEditorCommand : commands.registerCommand;
         this.disposables.push(register("waterproof." + name, handler, this));
+    }
+
+    private registerSetupCommand(name: string, handler: (...args: any[]) => void) {
+        this.disposables.push(commands.registerCommand("waterproof-setup."+name, handler, this));
     }
 
     /**
@@ -217,7 +246,7 @@ export class Coqnitive implements Disposable {
             markdown: { isTrusted: true, supportHtml: true },
         };
 
-        this.client = this.clientFactory(clientOptions, this.configuration);
+        this.client = this.clientFactory(clientOptions, this.configuration, this.context);
         return this.client.startWithHandlers(this.webviewManager).then(
             () => {
                 // show user that LSP is working

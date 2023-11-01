@@ -71,6 +71,21 @@
     ],
     "commands": [
       {
+        "command": "waterproof-setup.install-coq-lsp",
+        "title": "Install coq-lsp server",
+        "category": "Waterproof Setup"
+      },
+      {
+        "command": "waterproof-setup.install-coq-waterproof",
+        "title": "Install coq-waterproof libraries", 
+        "category": "Waterproof Setup"
+      },
+      {
+        "command": "waterproof-setup.install-all-tue-student",
+        "title": "Install opam packages needed for TUE students",
+        "category": "Waterproof Setup"
+      },
+      {
         "command": "waterproof.newWaterproofDocument",
         "title": "Waterproof: Create new waterproof document",
         "shortTitle": "New waterproof document"
@@ -211,9 +226,13 @@
             "description": "Enable Debug in Coq Server, usually this will produce backtraces on errors"
           },
           "waterproof.path": {
-            "type": "string",
-            "default": "coq-lsp",
-            "description": "Path to the coq-lsp binary, by default, search in PATH"
+            "type": [
+              "null",
+              "string" 
+            ],
+            "default": null,
+            "scope": "machine-overridable",
+            "description": "Path to the coq-lsp binary, by default, use bundled version."
           },
           "waterproof.args": {
             "type": "array",
@@ -262,6 +281,22 @@
             "description": "Automatically ignore Coq object files in the workspace (.vo, .vos, ...)"
           }
         }
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "instal-setup",
+        "title": "Installation and Setup",
+        "description": "A sample walkthrough",
+        "steps": [
+          {
+            "id": "install-coq-lsp-waterproof",
+            "title": "Run Command",
+            "description": "This step will run a command and check off once it has been run.\n[Run Command](command:waterproof-setup.install-all-tue-student)",
+            "media": { "image": "media/image.png", "altText": "Empty image" },
+            "completionEvents": ["onCommand:waterproof-setup.install-all-tue-student"]
+          }
+        ]
       }
     ]
   },
